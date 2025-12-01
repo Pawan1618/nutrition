@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 5, 5, 10;
+  --background-end-rgb: 0, 0, 0;
+
+  --neon-green: #39ff14;
+  --neon-red: #ff073a;
+  --neon-blue: #00f3ff;
+  --neon-purple: #bc13fe;
+
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 16px;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #000000 100%);
+  min-height: 100vh;
+  font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+}
+
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+  }
+
+  .neon-text-green {
+    color: var(--neon-green);
+    text-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
+  }
+
+  .neon-text-red {
+    color: var(--neon-red);
+    text-shadow: 0 0 20px rgba(255, 7, 58, 0.6);
+  }
+
+  .neon-border-blue {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+  }
+}
