@@ -8,15 +8,29 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { name, age, sex, weight, height, goalType, dailyCalorieGoal } = body;
 
+        // Validation
+        if (!name || !age || !sex || !weight || !height || !goalType || !dailyCalorieGoal) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
+
+        const parsedAge = parseInt(age);
+        const parsedWeight = parseFloat(weight);
+        const parsedHeight = parseFloat(height);
+        const parsedGoal = parseInt(dailyCalorieGoal);
+
+        if (isNaN(parsedAge) || isNaN(parsedWeight) || isNaN(parsedHeight) || isNaN(parsedGoal)) {
+            return NextResponse.json({ error: 'Invalid numeric values' }, { status: 400 });
+        }
+
         const user = await prisma.user.create({
             data: {
                 name,
-                age: parseInt(age),
+                age: parsedAge,
                 sex,
-                weight: parseFloat(weight),
-                height: parseFloat(height),
+                weight: parsedWeight,
+                height: parsedHeight,
                 goalType,
-                dailyCalorieGoal: parseInt(dailyCalorieGoal),
+                dailyCalorieGoal: parsedGoal,
             },
         });
 
@@ -24,14 +38,15 @@ export async function POST(request: Request) {
         await prisma.weightHistory.create({
             data: {
                 userId: user.id,
-                weight: parseFloat(weight),
+                weight: parsedWeight,
             },
         });
 
         return NextResponse.json(user);
     } catch (error) {
         console.error('Error creating user:', error);
-        return NextResponse.json({ error: 'Error creating user' }, { status: 500 });
+        // @ts-ignore
+        return NextResponse.json({ error: `Error creating user: ${error.message || error}` }, { status: 500 });
     }
 }
 
