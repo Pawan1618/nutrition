@@ -72,6 +72,21 @@ export default function Onboarding() {
         }),
     };
 
+    const validateStep = () => {
+        switch (step) {
+            case 1:
+                return formData.name.trim().length > 0;
+            case 2:
+                return formData.age && parseInt(formData.age) > 0 && formData.sex;
+            case 3:
+                return formData.weight && parseFloat(formData.weight) > 0 && formData.height && parseFloat(formData.height) > 0;
+            case 4:
+                return formData.goalType && formData.dailyCalorieGoal && parseInt(formData.dailyCalorieGoal) > 0;
+            default:
+                return false;
+        }
+    };
+
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2" />
@@ -210,11 +225,15 @@ export default function Onboarding() {
                         </Button>
 
                         {step < 4 ? (
-                            <Button onClick={nextStep}>
+                            <Button onClick={nextStep} disabled={!validateStep()}>
                                 Next <ChevronRight className="w-4 h-4 ml-2" />
                             </Button>
                         ) : (
-                            <Button onClick={handleSubmit} disabled={loading} className="bg-green-500 hover:bg-green-400 text-black shadow-lg shadow-green-500/20">
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={loading || !validateStep()}
+                                className="bg-green-500 hover:bg-green-400 text-black shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
                                 {loading ? 'Creating Profile...' : 'Start Tracking'}
                             </Button>
                         )}
