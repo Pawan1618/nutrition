@@ -26,6 +26,36 @@ model User {
   
   dailyLogs        DailyLog[]
   weightHistory    WeightHistory[]
+  waterLogs        WaterLog[]
+  habits           Habit[]
+}
+
+model WaterLog {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @default(now())
+  amount    Int      // in ml
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Habit {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  icon      String   // lucide icon name
+  streak    Int      @default(0)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  logs      HabitLog[]
+}
+
+model HabitLog {
+  id        String   @id @default(cuid())
+  habitId   String
+  date      DateTime @default(now())
+  habit     Habit    @relation(fields: [habitId], references: [id])
+  
+  @@unique([habitId, date]) // One log per habit per day
 }
 
 model Food {
