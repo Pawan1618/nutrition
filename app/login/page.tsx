@@ -1,121 +1,145 @@
 'use client';
-
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { ArrowRight } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { createClient } from '@/utils/supabase/client';
 
 export default function Login() {
     const router = useRouter();
-    const [userId, setUserId] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!userId.trim()) return;
-
-        setLoading(true);
-        setError(null);
-
-        try {
-            // Verify user exists
-            const res = await fetch(`/api/stats?userId=${userId}`);
-            if (res.ok) {
-                localStorage.setItem('userId', userId);
+    useEffect(() => {
+        const checkUser = async () => {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
                 router.push('/dashboard');
-            } else {
-                setError('User not found. Please check the ID or create a new account.');
             }
-        } catch (err) {
-            setError('Something went wrong. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
+        checkUser();
+    }, [router]);
 
-    const handleGuestLogin = async () => {
+    const handleLogin = async () => {
+        if (!email || !password) {
+            setError('Please fill in all fields');
+            return;
+        }
+
         setLoading(true);
         setError(null);
+
+        const supabase = createClient();
+
         try {
-            const res = await fetch('/api/user');
-            if (res.ok) {
-                const user = await res.json();
-                if (user && user.id) {
-                    localStorage.setItem('userId', user.id);
-                    router.push('/dashboard');
-                } else {
-                    setError('No users found. Please create an account.');
-                }
-            } else {
-                setError('Failed to fetch users.');
-            }
-        } catch (err) {
-            setError('Something went wrong.');
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) throw error;
+
+            // Successful login
+            router.push('/dashboard');
+            router.refresh(); // Refresh to update server components
+        } catch (err: any) {
+            setError(err.message || 'Invalid login credentials');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center p-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden font-sans selection:bg-emerald-500/30">
 
-            <div className="w-full max-w-md glass rounded-2xl p-8 shadow-xl">
-                <h1 className="text-3xl font-bold mb-2 text-center">Welcome Back</h1>
-                <p className="text-gray-400 text-center mb-8">Enter your User ID to continue</p>
+            {/* Top Right Actions */}
+            <div className="absolute top-6 right-6 z-20">
+                <ThemeToggle />
+            </div>
 
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <div className="space-y-2">
-                        <Input
-                            placeholder="User ID (e.g. cmio...)"
-                            value={userId}
-                            onChange={(e) => setUserId(e.target.value)}
-                            autoFocus
-                        />
+            {/* Glass Card */}
+            <div className="w-full max-w-md glass-card p-8 rounded-[2.5rem] shadow-2xl relative z-10">
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-700 mb-6 shadow-lg shadow-emerald-500/20 border-4 border-white dark:border-slate-800">
+                        <Lock className="text-white" size={32} />
+                    </div>
+                    <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Welcome Back</h1>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">Enter your credentials to access your tracker.</p>
+                </div>
+
+                {error && (
+                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm font-bold text-center">
+                        {error}
+                    </div>
+                )}
+
+                <div className="space-y-5">
+                    {/* Email Input */}
+                    <div>
+                        <label className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider ml-1 mb-1 block">Email Address</label>
+                        <div className="relative group">
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/10 py-4 pl-12 pr-4 rounded-xl text-slate-900 dark:text-white focus:border-emerald-500/50 focus:bg-white dark:focus:bg-black/50 outline-none transition-all placeholder:text-slate-400"
+                                placeholder="name@example.com"
+                            />
+                            <Mail className="absolute left-4 top-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                        </div>
                     </div>
 
-                    {error && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-xl text-red-400 text-sm text-center">
-                            {error}
+                    {/* Password Input */}
+                    <div>
+                        <label className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider ml-1 mb-1 block">Password</label>
+                        <div className="relative group">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/10 py-4 pl-12 pr-12 rounded-xl text-slate-900 dark:text-white focus:border-emerald-500/50 focus:bg-white dark:focus:bg-black/50 outline-none transition-all placeholder:text-slate-400"
+                                placeholder="••••••••"
+                            />
+                            <Lock className="absolute left-4 top-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-4 text-slate-400 hover:text-emerald-500 transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                         </div>
-                    )}
+                    </div>
 
-                    <Button
-                        type="submit"
-                        disabled={loading || !userId.trim()}
-                        className="w-full bg-green-500 hover:bg-green-400 text-black font-bold"
-                    >
-                        {loading ? 'Logging in...' : 'Login'}
-                    </Button>
-                </form>
+                    <div className="pt-2">
+                        <button
+                            onClick={handleLogin}
+                            disabled={loading}
+                            className="w-full py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-lg shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] transition-all flex items-center justify-center gap-2 transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                            {loading ? <Loader2 className="animate-spin" /> : <>Sign In <ArrowRight size={20} /></>}
+                        </button>
+                    </div>
 
-                <div className="mt-6 flex items-center justify-between">
-                    <div className="h-px bg-white/10 flex-1" />
-                    <span className="px-4 text-sm text-gray-500">or</span>
-                    <div className="h-px bg-white/10 flex-1" />
-                </div>
+                    <div className="text-center mt-6">
+                        <button className="text-sm text-slate-500 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors font-medium">
+                            Forgot your password?
+                        </button>
+                    </div>
 
-                <div className="mt-6 space-y-4">
-                    <Button
-                        variant="ghost"
-                        onClick={handleGuestLogin}
-                        disabled={loading}
-                        className="w-full"
-                    >
-                        Login as Guest / Demo User
-                    </Button>
-
-                    <p className="text-center text-sm text-gray-400">
-                        Don't have an account?{' '}
-                        <Link href="/onboarding" className="text-green-400 hover:text-green-300 font-medium">
-                            Start your journey
+                    <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/10 text-center">
+                        <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">Don't have an account? </span>
+                        <Link href="/signup" className="text-emerald-600 dark:text-emerald-400 font-bold text-sm hover:underline">
+                            Create Account
                         </Link>
-                    </p>
+                    </div>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

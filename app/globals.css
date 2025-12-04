@@ -1,49 +1,163 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 5, 5, 10;
-  --background-end-rgb: 0, 0, 0;
+@theme {
+    /* Override specific colors but keep the rest */
+    --color-slate-50: oklch(0.984 0.003 247.858);
+    --color-slate-950: oklch(0.201 0.013 252.377);
 
-  --neon-green: #39ff14;
-  --neon-red: #ff073a;
-  --neon-blue: #00f3ff;
-  --neon-purple: #bc13fe;
+    /* Custom Animations */
+    --animate-fade-in: fade-in 0.5s ease-out;
+    --animate-slide-in-up: slide-in-up 0.5s ease-out;
+    --animate-slide-in-right: slide-in-right 0.5s ease-out;
+    --animate-zoom-in: zoom-in 0.3s ease-out;
+    --animate-pulse-slow: pulse-slow 3s infinite;
 
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: 16px;
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slide-in-up {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slide-in-right {
+        from {
+            transform: translateX(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes zoom-in {
+        from {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @keyframes pulse-slow {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.8;
+        }
+    }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #000000 100%);
-  min-height: 100vh;
-  font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+/* Configure dark mode variant */
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+    :root {
+        --background: 210 40% 98%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --card-bg: 255 255 255;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 222.2 47.4% 11.2%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --card-bg: 2 6 23;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 142.1 76.2% 36.3%;
+    }
 }
 
-@layer components {
-  .glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-  }
+/* Glassmorphism utilities - using standard CSS for reliability */
+.glass-card {
+    background-color: rgb(255 255 255 / 0.6);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgb(226 232 240);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
 
-  .neon-text-green {
-    color: var(--neon-green);
-    text-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
-  }
+.dark .glass-card {
+    background-color: rgb(255 255 255 / 0.05);
+    /* bg-white/5 */
+    border-color: rgb(255 255 255 / 0.1);
+    /* border-white/10 */
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
 
-  .neon-text-red {
-    color: var(--neon-red);
-    text-shadow: 0 0 20px rgba(255, 7, 58, 0.6);
-  }
+.glass-nav {
+    background-color: rgb(255 255 255 / 0.9);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgb(226 232 240);
+}
 
-  .neon-border-blue {
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-  }
+.dark .glass-nav {
+    background-color: rgb(2 6 23 / 0.8);
+    /* slate-950/80 */
+    border-color: rgb(255 255 255 / 0.1);
+    /* border-white/10 */
+}
+
+/* Utility for hiding scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
