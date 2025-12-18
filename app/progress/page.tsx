@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { TrendingUp, Calendar, Activity, Droplets, Zap } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -21,7 +21,6 @@ import {
 
 export default function Progress() {
     const supabase = createClient();
-    const [date] = useState(new Date());
 
     // Fetch Weight History
     const { data: weightData } = useQuery({

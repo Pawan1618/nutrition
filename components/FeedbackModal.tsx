@@ -45,8 +45,9 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 setDescription('');
                 onClose();
             }, 2000);
-        } catch (err: any) {
-            setError(err.message || 'Something went wrong');
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -92,8 +93,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                             type="button"
                             onClick={() => setType('bug')}
                             className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${type === 'bug'
-                                    ? 'bg-red-500/10 border-red-500 text-red-500'
-                                    : 'bg-slate-50 dark:bg-white/5 border-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10'
+                                ? 'bg-red-500/10 border-red-500 text-red-500'
+                                : 'bg-slate-50 dark:bg-white/5 border-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10'
                                 }`}
                         >
                             <Bug size={24} />
@@ -103,8 +104,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                             type="button"
                             onClick={() => setType('enhancement')}
                             className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${type === 'enhancement'
-                                    ? 'bg-blue-500/10 border-blue-500 text-blue-500'
-                                    : 'bg-slate-50 dark:bg-white/5 border-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10'
+                                ? 'bg-blue-500/10 border-blue-500 text-blue-500'
+                                : 'bg-slate-50 dark:bg-white/5 border-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10'
                                 }`}
                         >
                             <Lightbulb size={24} />

@@ -53,8 +53,10 @@ export default function Signup() {
             // Successful signup
             router.push('/dashboard');
             router.refresh(); // Refresh to update server components
-        } catch (err: any) {
-            setError(err.message || 'An error occurred during signup');
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Signup failed';
+            console.error('Signup error:', error);
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }

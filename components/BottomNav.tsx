@@ -4,17 +4,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, List, Plus, Activity, User } from 'lucide-react';
 
+const NavItem = ({ href, icon: Icon, label, active }: { href: string, icon: React.ElementType, label: string, active: boolean }) => (
+    <Link href={href} className={`flex-1 flex flex-col items-center justify-center py-2 rounded-2xl transition-all duration-300 ${active ? 'text-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/20 shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'}`}>
+        <Icon size={22} strokeWidth={active ? 2.5 : 2} />
+        <span className={`text-[10px] font-bold mt-1 uppercase transition-all duration-300 ${active ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 hidden'}`}>{label}</span>
+    </Link>
+);
+
 export const BottomNav = () => {
     const pathname = usePathname();
 
     const isActive = (path: string) => pathname === path;
-
-    const NavItem = ({ href, icon: Icon, label, active }: { href: string, icon: any, label: string, active: boolean }) => (
-        <Link href={href} className={`flex-1 flex flex-col items-center justify-center py-2 rounded-2xl transition-all duration-300 ${active ? 'text-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/20 shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'}`}>
-            <Icon size={22} strokeWidth={active ? 2.5 : 2} />
-            <span className={`text-[10px] font-bold mt-1 uppercase transition-all duration-300 ${active ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 hidden'}`}>{label}</span>
-        </Link>
-    );
 
     return (
         <div className="fixed bottom-6 left-0 w-full px-6 z-40 pointer-events-none flex justify-center">

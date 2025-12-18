@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     ChevronLeft,
-    Camera,
-    Search,
     Plus,
     ScanLine,
     Loader2
@@ -56,7 +54,7 @@ export default function LogFood() {
             if (error) throw error;
 
             // Award XP
-            const { xp, level, error: xpError } = await addXP(user.id, XP_CONSTANTS.LOG_FOOD);
+            const { error: xpError } = await addXP(user.id, XP_CONSTANTS.LOG_FOOD);
             if (xpError) console.error('Error adding XP:', xpError);
 
             // Show Toast and Redirect

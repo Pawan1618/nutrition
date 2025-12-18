@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { Lock, Mail, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { createClient } from '@/utils/supabase/client';
@@ -47,8 +46,9 @@ export default function Login() {
             // Successful login
             router.push('/dashboard');
             router.refresh(); // Refresh to update server components
-        } catch (err: any) {
-            setError(err.message || 'Invalid login credentials');
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'An error occurred during login';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -133,11 +133,12 @@ export default function Login() {
                     </div>
 
                     <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/10 text-center">
-                        <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">Don't have an account? </span>
-                        <Link href="/signup" className="text-emerald-600 dark:text-emerald-400 font-bold text-sm hover:underline">
-                            Create Account
-                        </Link>
-                    </div>
+                        <p className="text-center text-slate-500 dark:text-slate-400 mt-6">
+                            Don&apos;t have an account?{' '}
+                            <a href="/signup" className="text-emerald-500 hover:text-emerald-400 font-bold hover:underline transition-all">
+                                Sign Up
+                            </a>
+                        </p></div>
                 </div>
             </div>
         </div>

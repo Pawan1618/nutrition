@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     User,
@@ -17,12 +17,24 @@ import { BottomNav } from '@/components/BottomNav';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { createClient } from '@/utils/supabase/client';
 
-export default function Profile() {
+interface Profile {
+    id?: string;
+    email?: string;
+    name?: string;
+    age?: number;
+    weight?: number;
+    height?: number;
+    goal_weight?: number;
+    daily_calorie_goal?: number;
+    avatar_url?: string;
+}
+
+export default function ProfilePage() {
     const router = useRouter();
     const supabase = createClient();
 
     const [loading, setLoading] = useState(true);
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
@@ -36,11 +48,7 @@ export default function Profile() {
         daily_calorie_goal: ''
     });
 
-    useEffect(() => {
-        fetchProfile();
-    }, []);
-
-    const fetchProfile = async () => {
+    const fetchProfile = useCallback(async () => {
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) {
@@ -48,49 +56,40 @@ export default function Profile() {
                 return;
             }
 
-            let { data, error } = await supabase
+
+
+            const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)
                 .single();
 
-            // Handle missing profile (lazy creation)
-            if (error && (error.code === 'PGRST116' || error.message.includes('Row not found'))) {
-                console.log('Profile not found, creating one...');
-                const { data: newProfile, error: createError } = await supabase
-                    .from('profiles')
-                    .insert({
-                        id: user.id,
-                        name: user.user_metadata?.full_name || 'User',
-                        xp: 0,
-                        level: 1,
-                        streak: 0
-                    })
-                    .select()
-                    .single();
-
-                if (createError) throw createError;
-                data = newProfile;
-                error = null;
+            if (error) {
+                // Log error but continue logic
+                console.log('Profile fetch error:', error.message);
             }
 
-            if (error) throw error;
-
-            setProfile(data);
-            setEditForm({
-                name: data.name || '',
-                age: data.age?.toString() || '',
-                weight: data.weight?.toString() || '',
-                height: data.height?.toString() || '',
-                goal_weight: data.goal_weight?.toString() || '',
-                daily_calorie_goal: data.daily_calorie_goal?.toString() || '2500'
-            });
+            if (data) {
+                setProfile(data);
+                setEditForm({
+                    name: data.name || '',
+                    age: data.age?.toString() || '',
+                    weight: data.weight?.toString() || '',
+                    height: data.height?.toString() || '',
+                    goal_weight: data.goal_weight?.toString() || '',
+                    daily_calorie_goal: data.daily_calorie_goal?.toString() || ''
+                });
+            }
         } catch (error) {
-            console.error('Error fetching profile:', error);
+            console.error('Error:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, [router, supabase]);
+
+    useEffect(() => {
+        fetchProfile();
+    }, [fetchProfile]);
 
     const handleUpdateProfile = async () => {
         try {
@@ -138,9 +137,17 @@ export default function Profile() {
 
             setIsSettingsOpen(false);
             fetchProfile(); // Refresh data
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error updating profile:', error);
-            alert(`Failed to update profile: ${error.message || JSON.stringify(error)}`);
+            let errorMessage = 'An unknown error occurred.';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            } else if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message: unknown }).message === 'string') {
+                errorMessage = (error as { message: string }).message;
+            } else {
+                errorMessage = JSON.stringify(error);
+            }
+            alert(`Failed to update profile: ${errorMessage}`);
         }
     };
 

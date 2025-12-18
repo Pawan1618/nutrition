@@ -12,16 +12,23 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<Theme>('light');
-
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme') as Theme | null;
-        if (savedTheme) {
-            setTheme(savedTheme);
-            if (savedTheme === 'dark') {
+    const [theme, setTheme] = useState<Theme>(() => {
+        if (typeof window !== 'undefined') {
+            const savedTheme = localStorage.getItem('theme') as Theme | null;
+            if (savedTheme) {
+                if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+                return savedTheme;
+            }
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.documentElement.classList.add('dark');
+                return 'dark';
             }
         }
+        return 'light';
+    });
+
+    useEffect(() => {
+        // Just empty effect or sync logic if needed, but init is handled
     }, []);
 
     const toggleTheme = useCallback(() => {
@@ -56,5 +63,7 @@ export function useTheme() {
     if (context === undefined) {
         throw new Error('useTheme must be used within a ThemeProvider');
     }
-    return context;
+    // Type assertion to ensure Theme is not null for consumers
+    // In practice, it will be 'light' or 'dark' due to initialization
+    return context as ThemeContextType;
 }

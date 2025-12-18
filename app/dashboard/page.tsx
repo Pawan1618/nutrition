@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
@@ -8,16 +7,11 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { createClient } from '@/utils/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import {
-    Zap,
+    Plus,
     Flame,
     Droplets,
-    Plus,
+    Zap,
     Check,
-    Menu,
-    User,
-    Home,
-    List,
-    Activity,
     Loader2,
     X
 } from 'lucide-react';
@@ -27,7 +21,7 @@ import { Toast } from '@/components/Toast';
 export default function Dashboard() {
     const supabase = createClient();
     const router = useRouter(); // Initialize router
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [date] = useState(new Date().toISOString().split('T')[0]);
     const [isLoadingUser, setIsLoadingUser] = useState(true); // Add loading state for user check
 
     // Habit States
@@ -55,11 +49,15 @@ export default function Dashboard() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return null;
 
-            let { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+            let { data } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
 
-            // Handle missing profile (lazy creation)
-            if (error && (error.code === 'PGRST116' || error.message.includes('Row not found'))) {
-                console.log('Profile not found in dashboard, creating one...');
+            // Handle new user (no profile yet) - Create default
+            if (!data) {
+                console.log('Creating new profile for user...');
                 const { data: newProfile, error: createError } = await supabase
                     .from('profiles')
                     .insert({
@@ -72,7 +70,9 @@ export default function Dashboard() {
                     .select()
                     .single();
 
-                if (!createError) {
+                if (createError) {
+                    console.error('Error creating profile:', createError);
+                } else {
                     data = newProfile;
                 }
             }
@@ -196,7 +196,7 @@ export default function Dashboard() {
         setShowToast(true);
     };
 
-    const toggleHabit = async (habit: any) => {
+    const toggleHabit = async (habit: { id: string; completed: boolean; streak: number }) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
@@ -423,7 +423,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className="space-y-3">
-                        {habits?.map((habit: any) => (
+                        {habits?.map((habit: { id: string; completed: boolean; name: string; streak: number }) => (
                             <motion.div
                                 key={habit.id}
                                 whileTap={{ scale: 0.98 }}

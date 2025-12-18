@@ -50,14 +50,14 @@ export const ScrollableContent = ({ children }: { children: React.ReactNode }) =
     </main>
 );
 
+const NavItem = ({ icon: Icon, href, active }: { icon: React.ElementType, href: string, active?: boolean }) => (
+    <Link href={href} className={`p-3 rounded-xl transition-all duration-300 ${active ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-500 hover:text-slate-300'}`}>
+        <Icon size={24} strokeWidth={active ? 2.5 : 2} />
+    </Link>
+);
+
 export const GlassNavigation = () => {
     const pathname = usePathname();
-
-    const NavItem = ({ icon: Icon, href, active }: { icon: any, href: string, active?: boolean }) => (
-        <Link href={href} className={`p-3 rounded-xl transition-all duration-300 ${active ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-500 hover:text-slate-300'}`}>
-            <Icon size={24} strokeWidth={active ? 2.5 : 2} />
-        </Link>
-    );
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-6 pt-2 pointer-events-none flex justify-center">

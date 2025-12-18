@@ -50,10 +50,11 @@ export async function POST(request: Request) {
             issueUrl: data.html_url
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
         console.error('Feedback Submission Error:', error);
         return NextResponse.json(
-            { error: error.message || 'Internal Server Error' },
+            { error: errorMessage },
             { status: 500 }
         );
     }
