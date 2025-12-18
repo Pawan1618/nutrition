@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    if: contains(github.event.head_commit.message, 'deploy code')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
