@@ -9,8 +9,10 @@ import {
     Target,
     X,
     Save,
-    Loader2
+    Loader2,
+    MessageSquare
 } from 'lucide-react';
+import { FeedbackModal } from '@/components/FeedbackModal';
 import { BottomNav } from '@/components/BottomNav';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { createClient } from '@/utils/supabase/client';
@@ -22,6 +24,7 @@ export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState<any>(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
     // Edit State
     const [editForm, setEditForm] = useState({
@@ -238,6 +241,19 @@ export default function Profile() {
                     </div>
                 </div>
 
+                {/* FEEDBACK BUTTON */}
+                <button
+                    onClick={() => setIsFeedbackOpen(true)}
+                    className="w-full flex items-center justify-between p-4 glass-card rounded-3xl hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 transition-colors group cursor-pointer mb-6"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                            <MessageSquare size={20} />
+                        </div>
+                        <span className="font-medium text-emerald-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">Give Feedback</span>
+                    </div>
+                </button>
+
                 {/* SIGN OUT */}
                 <button
                     onClick={handleSignOut}
@@ -273,7 +289,7 @@ export default function Profile() {
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <div>
+                                <div className="">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Age</label>
                                     <input
                                         type="number"
@@ -332,6 +348,8 @@ export default function Profile() {
                     </div>
                 </div>
             )}
+
+            <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
 
             <BottomNav />
         </div>
