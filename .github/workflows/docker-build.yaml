@@ -20,7 +20,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false # We only want to verify it BUILDS, not push it anywhere yet
+          push: false
           tags: nutrition-tracker:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
