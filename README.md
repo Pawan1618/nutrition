@@ -62,12 +62,24 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 ## Project Structure
 
--   `app/`: Next.js App Router pages and layouts.
--   `components/`: Reusable UI components.
--   `utils/`: Utility functions and Supabase client configuration.
--   `lib/`: Shared library code (e.g., utils).
--   `__tests__/`: Unit and integration tests.
--   `public/`: Static assets.
+## Project Structure
+
+```text
+nutrition_tracker/
+├── app/                  # Next.js App Router pages
+│   ├── api/             # API routes
+│   ├── dashboard/       # Main dashboard application
+│   ├── login/           # Login page
+│   ├── signup/          # Signup page
+│   ├── onboarding/      # User onboarding flow
+│   ├── profile/         # User profile management
+│   └── progress/        # Progress tracking features
+├── components/          # Reusable UI components
+├── lib/                 # Shared libraries
+├── public/              # Static assets
+├── utils/               # Utility functions
+└── __tests__/           # Tests
+```
 
 ## Scripts
 
