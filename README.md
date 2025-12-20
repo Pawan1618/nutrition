@@ -1,37 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nutrition Tracker
+
+A modern, full-stack application for tracking nutrition, logging meals, and monitoring health progress. Built with Next.js 16, Supabase, and TailwindCSS v4.
+
+## Features
+
+-   **User Authentication**: Secure signup and login using Supabase Auth.
+-   **Dashboard**: Overview of daily nutrition metrics (Calories, Carbs, Protein, Fat).
+-   **Nutrition Logging**: Easy-to-use interface for logging meals and snacks.
+-   **Progress Tracking**: Visual charts to monitor your nutritional intake over time.
+-   **Profile Management**: Manage user details and tracking preferences.
+-   **Responsive Design**: Fully responsive UI built with TailwindCSS for mobile and desktop.
+-   **Dark/Light Mode**: Seamless theme switching support.
+
+## Tech Stack
+
+-   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+-   **Styling**: [TailwindCSS v4](https://tailwindcss.com/)
+-   **Database & Auth**: [Supabase](https://supabase.com/)
+-   **State Management & Data Fetching**: [TanStack Query](https://tanstack.com/query/latest)
+-   **UI Components**: [Shadcn/ui](https://ui.shadcn.com/), [Lucide React](https://lucide.dev/)
+-   **Charts**: [Recharts](https://recharts.org/)
+-   **Animations**: [Framer Motion](https://www.framer.com/motion/)
+-   **Visual Effects**: [Canvas Confetti](https://www.npmjs.com/package/canvas-confetti)
+-   **Testing**: [Vitest](https://vitest.dev/), React Testing Library
 
 ## Getting Started
-this is  gg
 
-First, run the development server:
+Follow these instructions to get a copy of the project up and running on your local machine.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+-   Node.js (v20 or newer recommended)
+-   npm, yarn, pnpm, or bun
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/your-username/nutrition-tracker.git
+    cd nutrition_tracker
+    ```
 
-## Learn More
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+3.  **Environment Setup**
+    Create a `.env.local` file in the root directory and add your Supabase credentials:
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4.  **Run Development Server**
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+-   `app/`: Next.js App Router pages and layouts.
+-   `components/`: Reusable UI components.
+-   `utils/`: Utility functions and Supabase client configuration.
+-   `lib/`: Shared library code (e.g., utils).
+-   `__tests__/`: Unit and integration tests.
+-   `public/`: Static assets.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+-   `npm run dev`: Starts the development server.
+-   `npm run build`: Builds the application for production.
+-   `npm start`: Runs the built application in production mode.
+-   `npm run lint`: Runs ESLint to check for code quality issues.
+-   `npm test`: Runs the test suite using Vitest.
+-   `npm run type-check`: Checks for TypeScript errors without emitting files.
+
+## Deployment
+
+This project is configured for deployment on Vercel or GitHub Pages.
+
+For detailed instructions on deploying to **GitHub Pages**, please refer to [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## License
+
+This project is licensed under the MIT License.
