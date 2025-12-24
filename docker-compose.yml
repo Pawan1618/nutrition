@@ -10,8 +10,6 @@ services:
       args:
         NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
         NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-        GITHUB_ID: ${GITHUB_ID}
-        GITHUB_SECRET: ${GITHUB_SECRET}
     ports:
       - "3000:3000"
     # Runtime environment variables

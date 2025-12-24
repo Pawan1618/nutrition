@@ -17,7 +17,7 @@ if (Test-Path $EnvPath) {
     
     foreach ($line in $EnvContent) {
         # Only pick up specific public keys to emulate standard nextjs behavior + safety
-        if ($line -match "^(NEXT_PUBLIC_SUPABASE_.*|GITHUB_.*)=(.*)$") {
+        if ($line -match "^(NEXT_PUBLIC_SUPABASE_URL|NEXT_PUBLIC_SUPABASE_ANON_KEY)=(.*)$") {
             $key = $matches[1]
             $val = $matches[2].Trim()
             
