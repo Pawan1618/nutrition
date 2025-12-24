@@ -52,7 +52,9 @@ Write-Host "--------------------------------------------------`n" -ForegroundCol
 # We pass the Supabase keys as build arguments so they are baked into the image
 docker build -t $FullImageName . `
     --build-arg NEXT_PUBLIC_SUPABASE_URL=$script:NEXT_PUBLIC_SUPABASE_URL `
-    --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=$script:NEXT_PUBLIC_SUPABASE_ANON_KEY
+    --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=$script:NEXT_PUBLIC_SUPABASE_ANON_KEY `
+    --build-arg GITHUB_ID=$script:GITHUB_ID `
+    --build-arg GITHUB_SECRET=$script:GITHUB_SECRET
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Docker Build Failed!"

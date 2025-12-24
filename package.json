@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "docker:build": "powershell ./scripts/build-local.ps1",
+    "docker:run-hub": "powershell ./scripts/run-remote.ps1"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
